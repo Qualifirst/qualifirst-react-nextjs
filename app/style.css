@@ -1,0 +1,10 @@
+.reload-button {
+    font-size: 1.5em;
+    line-height: 0;
+    color: #555;
+    margin: 0;
+    padding: 0;
+}
+.reload-button:hover {
+    color: #000;
+}

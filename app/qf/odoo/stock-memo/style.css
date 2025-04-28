@@ -8,3 +8,7 @@ thead {
 th, td {
     padding: 5px;
 }
+th.min, td.min {
+    width: 0px;
+    padding: 0;
+}

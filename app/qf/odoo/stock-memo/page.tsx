@@ -29,7 +29,14 @@ export default async function Page({searchParams}) {
             },
         },
     );
-    const data = await response.json();
+    let data = {};
+    const responseBody = await response.text();
+    try {
+        data = JSON.parse(responseBody);
+    } catch (err) {
+        console.error(`Invalid response: ${responseBody}\nERROR: ${err}`);
+        return <div>Error: Invalid response.</div>;
+    }
 
     const count = Object.keys(data).length;
 
@@ -56,7 +63,8 @@ export default async function Page({searchParams}) {
                         <th className="text-right">Outgoing</th>
                         <th className="text-right">Incoming</th>
                         <th className="text-right">Manufacturable</th>
-                        <th className="text-right"><ReloadButton /></th>
+                        <th className="text-center">ETA</th>
+                        <th className="min"><ReloadButton /></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,7 +78,12 @@ export default async function Page({searchParams}) {
                                 <td className="text-right">{item.qtys['outgoing_qty'].toFixed(2)}</td>
                                 <td className="text-right">{item.qtys['incoming_qty'].toFixed(2)}</td>
                                 <td className="text-right">{item.qtys['manufacturable_qty'].toFixed(2)}</td>
-                                <td></td>
+                                <td className="text-center">{item.qtys['incoming_dates'].map(((inDate, idx) => (
+                                    <div key={`${item.id}-${idx}`}>
+                                        {inDate["date"]} / {inDate["qty"].toFixed(2)}
+                                    </div>
+                                )))}</td>
+                                <td className="min"></td>
                             </tr>
                         ))
                     }

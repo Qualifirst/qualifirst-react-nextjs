@@ -20,6 +20,8 @@ export default async function Page({searchParams}) {
         return <div>Error: No SKUS received.</div>;
     }
 
+    const showSkus: boolean = params.showSkus === "1";
+
     const response = await fetch(
         `${odooApiUrl}?skus=${skus}`,
         {
@@ -56,7 +58,7 @@ export default async function Page({searchParams}) {
             <table>
                 <thead>
                     <tr>
-                        {count !== 1 ? <th className="text-center">Product</th> : null}
+                        {count !== 1 || showSkus ? <th className="text-center">Product</th> : null}
                         <th className="text-center">Location</th>
                         <th className="text-right">On Hand</th>
                         <th className="text-right">Reserved</th>
@@ -71,7 +73,7 @@ export default async function Page({searchParams}) {
                     {
                         qtys.map((item) => (
                             <tr key={item.id} id={item.id}>
-                                {count !== 1 ? <td className="text-center">{item.sku}</td> : null}
+                                {count !== 1 || showSkus ? <td className="text-center">{item.sku}</td> : null}
                                 <td className="text-center">{item.company}</td>
                                 <td className="text-right">{item.qtys['qty_available'].toFixed(2)}</td>
                                 <td className="text-right">{item.qtys['reserved_qty'].toFixed(2)}</td>

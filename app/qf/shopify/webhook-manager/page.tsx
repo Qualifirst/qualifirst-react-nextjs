@@ -23,9 +23,11 @@ export default function Page() {
     }, [setNewWebhookURL]);
 
     const [webhooks, setWebhooks] = useState([]);
+    const [searched, setSearched] = useState(false);
 
     const loadWebhooks = useCallback(async () => {
         if (shopifyAccessToken && shopifyDomain) {
+            setSearched(true);
             const response = await fetch("/.netlify/functions/shopify-graphql", {
                 method: "POST",
                 headers: {
@@ -49,7 +51,7 @@ export default function Page() {
             const data = await response.json();
             setWebhooks(data?.data?.webhookSubscriptions?.nodes);
         }
-    }, [shopifyAccessToken, shopifyDomain, setWebhooks]);
+    }, [shopifyAccessToken, shopifyDomain, setWebhooks, setSearched]);
 
     const searchWebhooks = useCallback(async (e) => {
         e.preventDefault();
@@ -170,7 +172,7 @@ export default function Page() {
                     <button type="button" className="px-1 py-0.5 rounded bg-green-500 text-white" title="Delete Webhook" onClick={createNewWebhook}>+</button>
                 </div>
             </div>
-            {webhooks.sort((a, b) => {
+            {(webhooks || []).sort((a, b) => {
                 const callbackUrlCompare = a.callbackUrl.localeCompare(b.callbackUrl);
                 if (callbackUrlCompare !== 0) return callbackUrlCompare;
                 const topicCompare = a.topic.localeCompare(b.topic);
@@ -188,6 +190,15 @@ export default function Page() {
                     </div>
                 </div>;
             })}
+            {(webhooks === undefined || webhooks.length === 0) && searched && (
+                <div className="outline outline-1 outline-gray-200 table-row hover:bg-gray-100 text-gray-400">
+                    <div></div>
+                    <div className="table-cell p-1.5">
+                        No webhooks found...
+                    </div>
+                    <div></div>
+                </div>
+            )}
         </div>
     </>;
 };
